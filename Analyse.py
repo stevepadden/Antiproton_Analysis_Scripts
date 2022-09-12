@@ -1,9 +1,11 @@
-#import datas
-#set up range profile gaussian with foil depth
-#show energy profile at 13045
-#spatial heatmap
-#px py heatmap
-#angular heatmap?
+#This file does all analysis on an output foil, it produces multiple graphs such as;
+#Energy distributions, angular distributions, Range profiles and spatial heatmaps
+#This file is used extensivley in checking the antiproton distributions - it is strongly suggested to understand what is happening here before using it.
+#Bootstrap resampling is used to find errors related to given quantities, this is found at the bottom end of the code. It is not explained how to bootstrap resample
+#within this code, however the infomation here in conjunction with some prior knowledge should be sufficient to follow and adjust the code
+#as required.
+
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -12,11 +14,11 @@ pd.set_option('display.max_columns', None)
 
 Foil_type = "Si"
 Foil_fullname = "silicon"
-optimised_thick = 15044
-srim_thick = 8571
-capture_energy = 5000
+optimised_thick = 15044 #Thickness used
+srim_thick = 8571   #Thickness from SRIM
+capture_energy = 5000   #Max trappable energy
 #importing data
-suffix1 = "/home/mdrange/Pickle_Files/"
+suffix1 = "/home/mdrange/Pickle_Files/" #Pkl file location (ignore it being called suffix, this is related to another code)
 #Range Data
 Range_suffix = "Range_Profiles/"
 range_path = suffix1 + Range_suffix+Foil_type+".pkl"
@@ -25,9 +27,9 @@ figsize = [6.25,4]
 figsize = np.array(figsize)
 figsize = figsize * 1.4
 cmap="viridis"
-savestring = "/media/sf_MDrange_Shared/Si_Gauss_Images/"
+savestring = "/media/sf_MDrange_Shared/Si_Gauss_Images/" #Where the images save - make sure this is adjusted 
 #Optimised Data
-opt_suffix = "Si/"
+opt_suffix = "Si/" 
 opt_path = suffix1+opt_suffix+Foil_type+"_%s_withgauss.pkl"%optimised_thick
 opt_data = pd.read_pickle(opt_path)
 
