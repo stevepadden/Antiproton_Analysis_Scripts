@@ -56,8 +56,7 @@ x.
 
 def splinefit(xnew, xdata, ydata,smoothness=8):
     xdata,ydata = zip(*sorted(zip(xdata,ydata)))
-    #print(xdata)
-    #print(ydata)
+
     tck = interpolate.splrep(xdata,ydata,s=smoothness)
     spline =  interpolate.splev(xnew,tck)
     return(spline)
@@ -95,29 +94,10 @@ def do_elstop(foil,transition,smoothness):
 
     y = poly_lin_fit(x_long, df_array[:,0], df_array[:,1], 7, transition)
     #y = poly_lin_fit(x_long, df_array[:,0], df_array[:,1], 3, 0.65e7)
-    """
-    fig, ax = plt.subplots(1, 1)
-    ax.set_xlabel('Velocity (m/s)')
-    ax.set_ylabel(r'$\mathrm{Electronic\ stopping\ (eV/\AA)}$')
-    ax.scatter(df_array[:,0], df_array[:,1], color='C0',marker="+")
-    ax.plot(x_long, y, linestyle='--', color='C3',label="Poly+Exp")
-    #fig.savefig('./el_stop_velocity_Nordlund_lin-poly-exp_fit.jpeg',dpi=150, bbox_inches='tight')
-    plt.show()
-    """
-
-
-    #Fid = open(shared+"Python_Fit_SiPbar_No_ZBL.in","w");
-    #Fid = open(shared+"Python_Fit_AlPbar_No_ZBL.in","w");
-    #Fid = open(shared+"Python_Fit_AuPbar_No_ZBL.in","w");
-    #Fid = open(shared+"Python_Fit_CuPbar_No_ZBL.in","w");
-    #Fid = open(shared+"Python_Fit_TaPbar_No_ZBL.in","w");
-    #Fid = open(shared+"Python_Fit_AgPbar_No_ZBL.in","w");
-    #Fid = open(shared+"Python_Fit_TiPbar_No_ZBL.in","w");
-
     
-    Fid = open(shared+"Python_Fit_"+foil+"Pbar_No_ZBL.in","w");
+    Fid = open(shared+"Python_Fit_"+foil+"Pbar_No_ZBL.in","w"); #Opening a file to write the electronic stop too.
     
-    splined=  splinefit(x_long,x_long,y,smoothness=smoothness)
+    splined=  splinefit(x_long,x_long,y,smoothness=smoothness)  #splining 
     splined[0] = 0.00
     print(splined)
     
