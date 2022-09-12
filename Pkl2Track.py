@@ -1,3 +1,6 @@
+#Converts a pickle file of particles that successfully traverse a foil into a beam readable within G4Beamline,
+#Used to assess the ability of each foil within the particle trap itself
+#To use this file call $python3 Pkl2Track.py <Input Data from MDRange (.pkl)> <Output data file name (.g4bl)> <Foil thickness (ANGSTROMS)>
 import sys
 import pandas as pd
 from numpy import sqrt
@@ -45,8 +48,6 @@ def convert_vel_2_P(inp):
 
 def transmit_energy(dataframe,Foil_Width):
     df = pd.DataFrame()
-    #Total_transmit = 0
-    #Total_sub_5 = 0
     for i,j in dataframe.iterrows():
         #print(i)
         
@@ -72,11 +73,10 @@ except:
 
 
 data.reset_index(drop=True,inplace=True)
-#print(data)
+
 
 sx = convert_dist(data["sx"])
-#print(type(sx))
-#print(len(sx))
+
 sy = convert_dist(data["sy"])
 if IncludeZ == True:
     sz = convert_dist(data["sz"])
@@ -111,28 +111,24 @@ with open(sys.argv[2]+".txt",'wb') as f:
 f.close()
 
 fivekevdata = data[data["energy"]<5000]
-#print(data)
-#print("INCOMING 5")
-
 fivekevdata.reset_index(inplace=True)
-#print(fivekevdata)
 
     
 ranges = convert_dist(fivekevdata["range"])
-print("1")
+
 px = convert_vel_2_P(fivekevdata["vx"])
-print("2")
+
 py = convert_vel_2_P(fivekevdata["vy"])
-print("3")
+
 pz = convert_vel_2_P(fivekevdata["vz"])
-print("4")
+
 energy = convert_energy(fivekevdata["energy"])
-print("5")
+
 
 sx = convert_dist(fivekevdata["sx"])
-print("6")
+
 sy = convert_dist(fivekevdata["sy"])
-print("7")
+
 if IncludeZ == True:
     sz = convert_dist(fivekevdata["sz"])
 else:
