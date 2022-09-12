@@ -1,28 +1,31 @@
+#This file initially plots the depth profile of 100 keV antiprotons into infinite depth silicon.
+#Following this is then plots a 5keV antiproton beam depth profile into silicon, the suggested thickness for 100 keV -> 5 keV degredation is thus
+#calculated and plotted nicely for visualisation. This is not the true optimised depth, but used as a starter for later gaussian analysis.
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from gaussians import *
 from lmfit.models import SkewedGaussianModel
 
-pd.set_option('display.max_columns', None)
+pd.set_option('display.max_columns', None)  #Setting pandas to display as many columns as are present
 
-folder = r"/home/mdrange/Pickle_Files/"
-prefix = "Silicon/Silicon_End_"
-suffix = ".pkl"
+folder = r"/home/mdrange/Pickle_Files/" #Location of the MDRange returned datasets
+prefix = "Silicon/Silicon_End_" #File prefix
+suffix = ".pkl" #File suffix
 
-datasets = ["Range"]
+datasets = ["Range"]    #Which data sets we wish to look at within the pickle structures
 names = [r"100 keV $\bar{p}$"]
 model = SkewedGaussianModel()
 
-
+#Binning and creating a histogram object of antiprotons
 def Depth(fname,name):
     fname = folder+prefix+fname+suffix
     data = pd.read_pickle(fname)
     print(data)
     h1 =ax.hist(data["sz"],bins=100,edgecolor=(0,0,0,1),color="royalblue",label=name)
     print(h1)
-    return h1
-
+    return h1   
+#Plotting the histogram
 fig,ax = plt.subplots()
 xx = []
 for i,j in zip(datasets,names):
@@ -32,24 +35,14 @@ for i,j in zip(datasets,names):
 ax.set_xlabel("Range ($\AA$)")
 ax.set_ylabel("Counts")
 ax.set_title(r"Range profile of 100 keV $\bar{p}$ into silicon")
-#nordlunddat = pd.read_pickle(folder+"endrecoil.pkl")
-#print(nordlunddat)
-#ax.hist(nordlunddat["sz"],bins=100,alpha=0.5,edgecolor=(0,0,0,1))
+
 ax.legend(frameon=False)
-
-#plt.show()
-
-
-#model = Model(gaussian)
-#model = Model(bimodal)
-#a2 = 200
-#c2 = 1000
-#w2 = 400
+#First guesses for the skew gaussian
 Amp=200
 Cen=15000
 Wid=2400
 g = -2.4
-
+#Fitting the skew gaussian
 model = SkewedGaussianModel()
 params = model.make_params(amplitude=Amp,center=Cen,sigma=Wid,gamma=g)
 
@@ -59,30 +52,11 @@ h1 = xx[0]
 y =np.array(h1[0],dtype=int)
 x = np.array(h1[1],dtype=int)
 x = x[:-1]
-print(y)
-print(x)
-#result = model.fit(y,x=x, amp1=Amp, cen1=Cen, wid1=Wid,amp2=a2,wid2=w2,cen2=c2)
-#result = model.fit(y,x=x, amp=Amp, cen=Cen, wid=Wid)
+
 result = model.fit(y,params,x=x)
 
-#tamp = result.params['amp'].value
-#twid = result.params['wid'].value
-#tcen = result.params['cen'].value
-#a1 = result.params['amp1'].value
-#a2 = result.params['amp2'].value
-#c1 = result.params['cen1'].value
-#c2 = result.params['cen2'].value
-#w1 = result.params['wid1'].value
-#w2 = result.params['wid2'].value
-
-#xnew=np.arange(min(x),max(x),50)
 xnew = np.arange(min(x),max(x),500)
-#const_fit = gaussian(xnew, tamp, tcen, twid)  # y values from model
-#const_fit = bimodal(xnew, a1,c1,w1,a2,c2,w2)
-print(result.fit_report())
-#hp = ax.plot(xnew,const_fit,color="red")
-#ax.plot(x,result.init_fit)
-#const_fit = SkewedGaussianModel(x=xnew,amplitude=result.params['amplitude'],center=result.params['center'],sigma=result.params['sigma'],gamma=result.params['gamma'])
+#Returning fit params
 print(result.best_fit)
 fit = result.best_fit
 R = 1-result.residual.var() / np.var(y)
@@ -96,7 +70,7 @@ ax.set_xlim([0,max(x)*1.02])
 ax.legend(frameon=False)
 plt.show()
 
-
+#Doing the same as above but now using the 5 keV dataset, if you dont have a 5 keV data set, set this to False.
 kev_5 = True
 #5kev stuff
 fig,ax = plt.subplots()
@@ -124,7 +98,7 @@ if kev_5==True:
     maxindex = fit1.argmax()
     mode1 = x1[maxindex]
 
-    diff = mode-mode1
+    diff = mode-mode1   #This is the suggested thickness!
     ax.axvline(mode1,color="gold",label="Modal center 5keV=%.2f $\AA$"%mode1)
 
     ax.annotate(
