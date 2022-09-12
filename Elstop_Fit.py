@@ -1,3 +1,7 @@
+#This file performs conversions from digitised Antiproton data sets into a constant electronic stopping power profile
+#Allows for many data points to be used
+#Uses multiple fitting routines, starting from polynomial fitting with straight line extrapolaions, and later using a smoothing spline to remove any experimental noise
+
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
@@ -60,14 +64,8 @@ def splinefit(xnew, xdata, ydata,smoothness=8):
 
 def do_elstop(foil,transition,smoothness):
     shared = "/media/sf_MDrange_Shared/"
-    #El_digi = np.genfromtxt(shared+"Pbar_Si_Dataset.txt",delimiter=",")
-    #El_digi = np.genfromtxt(shared+"Pbar_Al.txt",delimiter=",")
-    #El_digi = np.genfromtxt(shared+"Pbar_Ag_Dataset.txt",delimiter=",")
-    #El_digi = np.genfromtxt(shared+"Pbar_Au_Dataset2.txt",delimiter=",")
-    #El_digi = np.genfromtxt(shared+"Pbar_Cu_Dataset.txt",delimiter=",")
-    #El_digi = np.genfromtxt(shared+"Pbar_Ta_Dataset.txt",delimiter=",")
-    #El_digi = np.genfromtxt(shared+"Pbar_Ti_Dataset.txt",delimiter=",")
-    El_digi = np.genfromtxt(shared+"Pbar_"+foil+"_Dataset.txt",delimiter=",")
+    El_digi = np.genfromtxt(shared+"Pbar_"+foil+"_Dataset.txt",delimiter=",")   #Digitised data set in its native units, please see Thesis entitled
+    #"COMPLETE END TO END ANTIPROTON SIMULATIONS OF TRANSPORT,DEGRADATION AND EARLY TRAPPING" for detailed explanation of where the data comes from.
 
     El_digi[:,1] = El_digi[:,1] / 10 
     proton_mass = 1.6726219e-27
@@ -148,24 +146,3 @@ def do_elstop(foil,transition,smoothness):
 
 for i,j,k in zip(foil,transitions,smoothnesses):
     do_elstop(i,j,k)
-
-"""
-Energy_Kev = np.power(x_long,2)*proton_mass*0.5*1/kev_2_j
-print(Energy_Kev)
-Stopping_Kev_nm = y*10
-Stopping_Kev_nm = Stopping_Kev_nm/1000
-print(Stopping_Kev_nm)
-
-#Original_Data = np.genfromtxt(shared+"Pbar_Si_Dataset.txt",delimiter=",")
-Original_Data = np.genfromtxt(shared+"Pbar_Al.txt",delimiter=",")
-
-#plt.plot(Energy_Kev,Stopping_Kev_nm)
-#plt.scatter(Original_Data[:,0],Original_Data[:,1]/1000)
-#plt.xscale("log")
-#plt.xlim((0,1200))
-#plt.show()
-
-df_new = pd.DataFrame({"E0":Energy_Kev,"Sn":Stopping_Kev_nm})
-#print(df_new)
-df_new.to_pickle("/home/mdrange/Pickle_Files/AL_ElStop_Kev_Nm.pkl")
-"""
