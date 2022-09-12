@@ -1,3 +1,6 @@
+#This file performs the gaussian analysis to find the optimum thickness for 5 keV transmission
+# A number of datasets are used, found by iterating around the optimum thickness from Range_Find.py
+#This produces a gaussian distribution, the modal centre of this gaussian is our new optimised thickness
 import sys
 import numpy as np
 import pandas as pd
