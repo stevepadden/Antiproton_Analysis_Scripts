@@ -1,3 +1,7 @@
+#Creates a heatmap of proton/antiproton spatial positions upon leaving a foil of a given thickness
+#Overlays both onto one spatial heatmap with edge distributions for clarity,
+#Useful to show the differences in either 2 foil types, or too show the difference between 2 particle species traversing foils
+
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -11,7 +15,7 @@ import seaborn as sns
 
 mpl.rcParams["legend.frameon"] = False
 mpl.rcParams["legend.loc"] = "upper left"
-srimpath = "/media/sf_MDrange_Shared/TRANSMIT_100_5_8571_SI.txt"
+srimpath = "/media/sf_MDrange_Shared/TRANSMIT_100_5_8571_SI.txt"    #Srim transmitted dataset
 srim_ini_num = 20000
 srimrange = 8571
 md_range = 15044
@@ -25,7 +29,7 @@ bsfrac = 0.05 #Fraction used in each resample
 
 
 
-
+#Cleaning up the SRIM data
 with open(srimpath,'r') as file:
     text = file.read()
 clean = text.replace("T","")
@@ -40,7 +44,7 @@ transcols = ["Ion Numb","Atom Numb","Energy","Depth_X","Lateral_Y","Lateral_Z","
 Srim = pd.DataFrame(transmitted,columns=transcols)
 print(Srim)
 
-mdpath = "/home/mdrange/Pickle_Files/Si/Si_15044_nogauss.pkl"
+mdpath = "/home/mdrange/Pickle_Files/Si/Si_15044_nogauss.pkl"   #Pickled dataset resulting from Molecular Dynamics simulations
 
 
 
@@ -130,7 +134,7 @@ print(md_transmitted)
 
 #step1 load datasets
 
-mdpath = "/home/mdrange/Pickle_Files/Si/Si_15044_nogauss.pkl"
+mdpath = "/home/mdrange/Pickle_Files/Si/Si_15044_nogauss.pkl"   #Reloading the dataset for antiprotons
 md = pd.read_pickle(mdpath)
 pbar=md[md["sz"]>md_range]
 pbar= pbar.sample(10000)
@@ -208,10 +212,6 @@ ax.plot(pbar_X2,pbar_Y2,"k:",ms=1,linewidth=2.0,zorder=8,color=pbar_contours)
 
 pbar_X3,pbar_Y3 = ellipse(pbar_sdx*3,pbar_sdy*3,rotation,pbar_xcen,pbar_ycen)
 ax.plot(pbar_X3,pbar_Y3,"k:",ms=1,linewidth=2.0,zorder=9,color=pbar_contours)
-
-#ax.annotate('$3\\sigma$', xy=(pbar_X3[xco], pbar_Y1[yco]), xycoords='data',xytext=(10, 10), 
- #             textcoords='offset points', horizontalalignment='right', 
- #             verticalalignment='bottom',fontsize=10)
 
 
 proton_X1,proton_Y1 = ellipse(proton_sdx,proton_sdy,rotation,proton_xcen,proton_ycen)
